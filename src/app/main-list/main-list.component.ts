@@ -109,7 +109,7 @@ export class MainListComponent implements OnInit {
   }
 
   search(keyword: string) {
-    this.form.patchValue({ filterName: keyword });
+    this.form.patchValue({ filter: keyword });
   }
 
   changePage(pageNo: PageEvent) {
@@ -187,7 +187,9 @@ export class MainListComponent implements OnInit {
       this.form.get('sortDirection')?.value !== ''
         ? this.form.get('sortDirection')?.value
         : 'asc',
-      this.form.get('filter')?.value,
+      this.form.get('filter')?.value !== ''
+        ? this.form.get('filter')?.value
+        : '',
       this.form.get('perPage')?.value !== ''
         ? this.form.get('perPage')?.value
         : 10,

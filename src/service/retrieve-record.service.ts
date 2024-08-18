@@ -1,3 +1,4 @@
+import { query } from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { filter, Observable, of } from 'rxjs';
@@ -20,7 +21,8 @@ export class RetrieveRecordService {
       perPage,
       sortColumn,
       sortDirection,
-      filterName
+      filterName,
+      filterquery
     ); // Generate 10 random records
 
     return new Observable((observer) => {
@@ -34,7 +36,8 @@ export class RetrieveRecordService {
     count: number,
     column: 'name' | 'calories' | 'fat' | 'carbs' | 'protein',
     direction: string,
-    filterName: string[]
+    filterName: string[],
+    query: string
   ): any[] {
     let records = [];
     const names = [
@@ -59,7 +62,6 @@ export class RetrieveRecordService {
     }[] = [];
 
     for (let i = 0; i < count; i++) {
-      console.info('i:', i);
       const name = names[Math.floor(Math.random() * names.length)];
       const calories = Math.floor(Math.random() * 500);
       const fat = Math.floor(Math.random() * 20);
@@ -68,7 +70,7 @@ export class RetrieveRecordService {
 
       records.push({ name, calories, fat, carbs, protein });
     }
-
+    // SORT COLUMN
     records.sort((a, b) => {
       if (direction === 'asc') {
         if (a[column] < b[column]) {
@@ -81,11 +83,34 @@ export class RetrieveRecordService {
       }
       return 1;
     });
+
+    // FILTER BY NAME ONLY
     if (filterName.length > 0) {
       filterRecord = records.filter((record) =>
         filterName.includes(record.name)
       );
+    }
 
+    // GLOBAL SEARCH
+    let isExist: boolean = false;
+    if (query) {
+      type RecordKey = 'name' | 'calories' | 'fat' | 'carbs' | 'protein';
+      records.filter((record) => {
+        isExist =
+          record.name.includes(query) ||
+          record.calories.toString().includes(query) ||
+          record.fat.toString().includes(query) ||
+          record.carbs.toString().includes(query);
+        console.info('isExist', isExist);
+        console.info('record', record);
+        if (isExist) {
+          filterRecord.push(record);
+        }
+        return isExist;
+      });
+    }
+
+    if (filterRecord.length > 0) {
       records = filterRecord;
     }
 

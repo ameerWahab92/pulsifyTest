@@ -140,26 +140,7 @@ export class MainListComponent implements OnInit {
       pageNo: values.pageNo ? values.pageNo : '',
     });
 
-    this.resultRecords$ = this.api.getRecords(
-      this.form.get('pageNo')?.value !== ''
-        ? this.form.get('pageNo')?.value
-        : 10,
-      this.form.get('columnName')?.value !== ''
-        ? this.form.get('columnName')?.value
-        : 'name',
-      this.form.get('sortDirection')?.value !== ''
-        ? this.form.get('sortDirection')?.value
-        : 'asc',
-      this.form.get('filter')?.value !== ''
-        ? this.form.get('filter')?.value
-        : '',
-      this.form.get('perPage')?.value !== ''
-        ? this.form.get('perPage')?.value
-        : 10,
-      this.form.get('filterName')?.value !== ''
-        ? this.form.get('filterName')?.value
-        : []
-    );
+    this.loadRecords();
   }
 
   queryChanged() {
@@ -192,6 +173,10 @@ export class MainListComponent implements OnInit {
       queryParamsHandling: 'merge',
     });
 
+    this.loadRecords();
+  }
+
+  loadRecords() {
     this.resultRecords$ = this.api.getRecords(
       this.form.get('pageNo')?.value !== ''
         ? this.form.get('pageNo')?.value

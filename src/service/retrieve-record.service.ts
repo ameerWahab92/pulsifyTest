@@ -79,7 +79,6 @@ export class RetrieveRecordService {
           return 1;
         }
       }
-
       return 1;
     });
     if (filterName.length > 0) {
@@ -87,12 +86,8 @@ export class RetrieveRecordService {
         filterName.includes(record.name)
       );
 
-   
-
       records = filterRecord;
     }
-
-    console.info('records:', records);
 
     return records;
   }

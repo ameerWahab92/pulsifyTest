@@ -1,0 +1,71 @@
+<mat-sidenav-container
+  class="container"
+  (backdropClick)="setSidenav(false)"
+  [hasBackdrop]="(sidenavOpened$ | async) ?? false"
+>
+  <mat-sidenav
+    [opened]="(sidenavOpened$ | async) ?? false"
+    (closedStart)="setSidenav(false)"
+    [autoFocus]="true"
+    position="end"
+  >
+    <app-side-nav
+      (onClose)="setSidenav($event)"
+      (onApply)="applyFilter($event)"
+      [listName]="(listName$ | async) ?? []"
+    ></app-side-nav>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="row">
+      <div class="text-end">
+        <button mat-flat-button (click)="openSideNav()">
+          <mat-icon>tune</mat-icon>
+        </button>
+      </div>
+
+      <mat-form-field appearance="standard">
+        <input
+          matInput
+          #searchInput
+          autocomplete="off"
+          (keyup.enter)="search(searchInput.value)"
+          [placeholder]="'Filter by name'"
+        />
+        <mat-icon matSuffix (click)="search(searchInput.value)"
+          >search</mat-icon
+        >
+      </mat-form-field>
+    </div>
+
+    <mat-spinner *ngIf="!(resultRecords$ | async)"></mat-spinner>
+    <table class="table" matSort (matSortChange)="sortData($event)">
+      <thead>
+        <tr>
+          <th mat-sort-header="name">Dessert (100g)</th>
+          <th mat-sort-header="calories">Calories</th>
+          <th mat-sort-header="fat">Fat (g)</th>
+          <th mat-sort-header="carbs">Carbs (g)</th>
+          <th mat-sort-header="protein">Protein (g)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of resultRecords$ | async">
+          <td>{{ data.name }}</td>
+          <td>{{ data.calories }}</td>
+          <td>{{ data.fat }}</td>
+          <td>{{ data.carbs }}</td>
+          <td>{{ data.protein }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <mat-paginator
+      [length]="100"
+      [pageSize]="form.get('perPage')?.value"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page"
+      (page)="changePage($event)"
+    >
+    </mat-paginator>
+  </mat-sidenav-content>
+</mat-sidenav-container>
